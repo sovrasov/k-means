@@ -7,7 +7,24 @@ Copyright (C) 2017 Sovrasov V. - All Rights Reserved
 */
 #pragma once
 
+#include <vector>
+
+using fptype = double;
+using PointNd = std::vector<fptype>;
+
 class KMeans
 {
+private:
 
+  std::vector<int> mCurrentLabels;
+
+  void InitClusters();
+
+public:
+
+  KMeans(std::vector<PointNd>& inputPoints, int k, int maxIters);
+
+  void run();
+  std::vector<PointNd> getClusters() const;
+  std::vector<int> getLabels() const;
 };
