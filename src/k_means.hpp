@@ -17,12 +17,22 @@ class KMeans
 private:
 
   std::vector<int> mCurrentLabels;
+  std::vector<int> mClustersSizes;
+  std::vector<PointNd> mCurrentClusters;
+  std::vector<fptype> mDistances;
+  const std::vector<PointNd>& mDataPoints;
+  int mK;
+  int mMaxIters;
+  int mDataDim;
 
   void InitClusters();
+  int getNearestClusterLabel(const PointNd& point) const;
+  void UpdateLabels();
+  void UpdateClusters();
 
 public:
 
-  KMeans(std::vector<PointNd>& inputPoints, int k, int maxIters);
+  KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters);
 
   void run();
   std::vector<PointNd> getClusters() const;

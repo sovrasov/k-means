@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <random>
+#include <omp.h>
 
 using namespace std;
 
@@ -31,14 +32,17 @@ int main(int argc, const char** argv)
   vector<PointNd> points;
   vector<PointNd> centers(K);
   centers[0] = {0, 0};
-  centers[1] = {3, 1.3};
+  centers[1] = {3, 4.3};
 
-  makeGaussians(points, centers, K, 100, dimension, { 1., 2.5 });
+  makeGaussians(points, centers, K, 10000, dimension, { 1., 1.5 });
 
   KMeans clusterizer(points, K, 1000);
+  float start = omp_get_wtime();
   clusterizer.run();
+  float finish = omp_get_wtime();
 
   auto estimatedCenters = clusterizer.getClusters();
+  cout << "Time elapsed: " << finish - start << " seconds" << endl;
   cout << "Estimated centers: " << endl;
   for (const auto& center : estimatedCenters)
   {
