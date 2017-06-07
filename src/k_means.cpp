@@ -14,8 +14,9 @@ Copyright (C) 2017 Sovrasov V. - All Rights Reserved
 
 using namespace std;
 
-namespace{
-  fptype euclideanDistance(const PointNd& p1, const PointNd& p2)
+namespace
+{
+  fptype euclideanDistanceSQR(const PointNd& p1, const PointNd& p2)
   {
     size_t dim = p1.size();
     const fptype* data1 = p1.data();
@@ -35,7 +36,6 @@ namespace{
     for(size_t i = 0; i < dim; i++)
       dataDst[i] = data1[i] + data2[i];
   }
-
   void scaleVector(PointNd& p1, fptype scale)
   {
     size_t dim = p1.size();
@@ -109,7 +109,7 @@ int KMeans::getNearestClusterLabel(const PointNd& point) const
   fptype minDist = numeric_limits<fptype>::max();
   for(int i = 0; i < mK; i++)
   {
-    fptype currentDist = euclideanDistance(point, mCurrentClusters[i]);
+    fptype currentDist = euclideanDistanceSQR(point, mCurrentClusters[i]);
     if(currentDist < minDist)
     {
       minDist = currentDist;
@@ -127,5 +127,5 @@ std::vector<PointNd> KMeans::getClusters() const
 
 std::vector<int> KMeans::getLabels() const
 {
-  return std::vector<int>();
+  return mCurrentLabels;
 }

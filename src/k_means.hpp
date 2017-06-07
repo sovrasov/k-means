@@ -19,8 +19,8 @@ private:
   std::vector<int> mCurrentLabels;
   std::vector<int> mClustersSizes;
   std::vector<PointNd> mCurrentClusters;
-  std::vector<fptype> mDistances;
   const std::vector<PointNd>& mDataPoints;
+
   int mK;
   int mMaxIters;
   int mDataDim;
