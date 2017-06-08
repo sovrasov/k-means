@@ -13,6 +13,7 @@ namespace km
 {
   using fptype = double;
   using PointNd = std::vector<fptype>;
+  enum class InitMethod {RANDOM, PP};
 
   class KMeans
   {
@@ -28,6 +29,7 @@ namespace km
     int mMaxIters;
     int mDataDim;
     fptype mEps;
+    InitMethod mInitMet;
 
     void InitClusters();
     int getNearestClusterLabel(const PointNd& point) const;
@@ -37,7 +39,8 @@ namespace km
 
   public:
 
-    KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters, fptype eps = 0);
+    KMeans(const std::vector<PointNd>& inputPoints, int k,
+      int maxIters = 50, InitMethod method = InitMethod::RANDOM, fptype eps = 0);
 
     void run();
     std::vector<PointNd> getClusters() const;

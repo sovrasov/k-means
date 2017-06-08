@@ -45,8 +45,9 @@ namespace
   }
 }
 
-KMeans::KMeans(const vector<PointNd>& inputPoints, int k, int maxIters, fptype eps) :
-  mDataPoints(inputPoints), mK(k), mMaxIters(maxIters), mEps(eps)
+KMeans::KMeans(const vector<PointNd>& inputPoints, int k,
+  int maxIters, InitMethod method, fptype eps) :
+  mDataPoints(inputPoints), mK(k), mMaxIters(maxIters), mEps(eps), mInitMet(method)
 {
   if(!inputPoints.empty())
     mDataDim = inputPoints[0].size();
@@ -79,10 +80,42 @@ void KMeans::InitClusters()
   mCurrentClusters.resize(mK);
   mPreviousClusters.resize(mK);
 
-  for(int i = 0; i < mK; i++)
+  if(mInitMet == InitMethod::RANDOM)
   {
-    mCurrentClusters[i] = mDataPoints[dis(generator)];
-    mPreviousClusters[i] = mCurrentClusters[i];
+    for(int i = 0; i < mK; i++)
+    {
+      mCurrentClusters[i] = mDataPoints[dis(generator)];
+      mPreviousClusters[i] = mCurrentClusters[i];
+    }
+  }
+  else
+  {
+    uniform_real_distribution<fptype> real_dis(0.0, 1.0);
+    mCurrentClusters[0] = mPreviousClusters[0] = mDataPoints[dis(generator)];
+    vector<fptype> distances(mDataPoints.size());
+
+    for(int k = 1; k < mK; k++)
+    {
+      fptype distSum = 0;
+      for(size_t i = 0; i < mDataPoints.size(); i++)
+      {
+        fptype minDist = numeric_limits<fptype>::max();
+        for(int j = 0; j < k; j++)
+          minDist = min(minDist, euclideanDistanceSQR(mDataPoints[i], mCurrentClusters[j]));
+        distances[i] = minDist;
+        distSum += minDist;
+      }
+      fptype splitSample = distSum*real_dis(generator);
+      distSum = 0;
+      size_t i;
+      for(i = 0; i < distances.size(); i++)
+      {
+        distSum += distances[i];
+        if(distSum >= splitSample)
+          break;
+      }
+      mCurrentClusters[k] = mPreviousClusters[k] = mDataPoints[i];
+    }
   }
 }
 

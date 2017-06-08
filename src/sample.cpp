@@ -38,7 +38,7 @@ int main(int argc, const char** argv)
 
   makeGaussians(points, centers, K, 100000, dimension, { 1., 1.5, 3. });
 
-  KMeans clusterizer(points, K, 100);
+  KMeans clusterizer(points, K, 500, InitMethod::PP);
   float start = omp_get_wtime();
   clusterizer.run();
   float finish = omp_get_wtime();
