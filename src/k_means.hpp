@@ -21,20 +21,23 @@ namespace km
     std::vector<int> mCurrentLabels;
     std::vector<int> mClustersSizes;
     std::vector<PointNd> mCurrentClusters;
+    std::vector<PointNd> mPreviousClusters;
     const std::vector<PointNd>& mDataPoints;
 
     int mK;
     int mMaxIters;
     int mDataDim;
+    fptype mEps;
 
     void InitClusters();
     int getNearestClusterLabel(const PointNd& point) const;
     void UpdateLabels();
     void UpdateClusters();
+    bool CheckStopCondition() const;
 
   public:
 
-    KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters);
+    KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters, fptype eps = 0);
 
     void run();
     std::vector<PointNd> getClusters() const;

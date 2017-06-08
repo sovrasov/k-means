@@ -45,8 +45,8 @@ namespace
   }
 }
 
-KMeans::KMeans(const vector<PointNd>& inputPoints, int k, int maxIters) :
-  mDataPoints(inputPoints), mK(k), mMaxIters(maxIters)
+KMeans::KMeans(const vector<PointNd>& inputPoints, int k, int maxIters, fptype eps) :
+  mDataPoints(inputPoints), mK(k), mMaxIters(maxIters), mEps(eps)
 {
   if(!inputPoints.empty())
     mDataDim = inputPoints[0].size();
@@ -57,16 +57,19 @@ void KMeans::run()
   mCurrentLabels.resize(mDataPoints.size());
   mClustersSizes.resize(mK);
 
-  bool needStop = false;
   int itersCounter = 0;
 
   InitClusters();
-  while(!needStop && itersCounter < mMaxIters)
+  UpdateLabels();
+
+  do
   {
-    UpdateLabels();
+    swap(mCurrentClusters, mPreviousClusters);
     UpdateClusters();
+    UpdateLabels();
     itersCounter++;
   }
+  while(itersCounter < mMaxIters && !CheckStopCondition());
 }
 
 void KMeans::InitClusters()
@@ -74,9 +77,13 @@ void KMeans::InitClusters()
   default_random_engine generator;
   uniform_int_distribution<> dis(0, mDataPoints.size());
   mCurrentClusters.resize(mK);
+  mPreviousClusters.resize(mK);
 
   for(int i = 0; i < mK; i++)
+  {
     mCurrentClusters[i] = mDataPoints[dis(generator)];
+    mPreviousClusters[i] = mCurrentClusters[i];
+  }
 }
 
 void KMeans::UpdateClusters()
@@ -87,9 +94,9 @@ void KMeans::UpdateClusters()
 
   for(size_t i = 0; i < mCurrentLabels.size(); i++)
   {
-      int clusterLbl = mCurrentLabels[i];
-      mClustersSizes[clusterLbl]++;
-      addVectors(mCurrentClusters[clusterLbl], mDataPoints[i], mCurrentClusters[clusterLbl]);
+    int clusterLbl = mCurrentLabels[i];
+    mClustersSizes[clusterLbl]++;
+    addVectors(mCurrentClusters[clusterLbl], mDataPoints[i], mCurrentClusters[clusterLbl]);
   }
 
   for(int k = 0; k < mK; k++)
@@ -119,6 +126,17 @@ int KMeans::getNearestClusterLabel(const PointNd& point) const
   }
 
   return label;
+}
+
+bool KMeans::CheckStopCondition() const
+{
+  fptype maxDist = 0;
+  for(int k = 0; k < mK; k++)
+    maxDist = max(euclideanDistanceSQR(mCurrentClusters[k], mPreviousClusters[k]), maxDist);
+
+  if(maxDist <= mEps)
+    return true;
+  return false;
 }
 
 vector<PointNd> KMeans::getClusters() const

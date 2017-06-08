@@ -33,11 +33,11 @@ int main(int argc, const char** argv)
   vector<PointNd> points;
   vector<PointNd> centers(K);
   centers[0] = {0, 0};
-  centers[1] = {3, 4.3};
+  centers[1] = {3., 4.3};
 
   makeGaussians(points, centers, K, 10000, dimension, { 1., 1.5 });
 
-  KMeans clusterizer(points, K, 1000);
+  KMeans clusterizer(points, K, 100);
   float start = omp_get_wtime();
   clusterizer.run();
   float finish = omp_get_wtime();
