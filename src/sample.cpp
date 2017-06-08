@@ -27,15 +27,16 @@ void makeGaussians(vector<PointNd>& points, const vector<PointNd>& centers, int 
 
 int main(int argc, const char** argv)
 {
-  const int K = 2;
-  const int dimension = 2;
+  const int K = 3;
+  const int dimension = 3;
 
   vector<PointNd> points;
   vector<PointNd> centers(K);
-  centers[0] = {0, 0};
-  centers[1] = {3., 4.3};
+  centers[0] = {0, 0, 0};
+  centers[1] = {3., 4.3, 10.};
+  centers[2] = {10., 4.3, 2.};
 
-  makeGaussians(points, centers, K, 10000, dimension, { 1., 1.5 });
+  makeGaussians(points, centers, K, 100000, dimension, { 1., 1.5, 3. });
 
   KMeans clusterizer(points, K, 100);
   float start = omp_get_wtime();
