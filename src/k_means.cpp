@@ -10,9 +10,9 @@ Copyright (C) 2017 Sovrasov V. - All Rights Reserved
 #include <algorithm>
 #include <random>
 #include <limits>
-#include <cmath>
 
 using namespace std;
+using namespace km;
 
 namespace
 {
@@ -45,7 +45,7 @@ namespace
   }
 }
 
-KMeans::KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters) :
+KMeans::KMeans(const vector<PointNd>& inputPoints, int k, int maxIters) :
   mDataPoints(inputPoints), mK(k), mMaxIters(maxIters)
 {
   if(!inputPoints.empty())
@@ -93,7 +93,8 @@ void KMeans::UpdateClusters()
   }
 
   for(int k = 0; k < mK; k++)
-    scaleVector(mCurrentClusters[k], (fptype)1. / (mClustersSizes[k] + 1));
+    if(mClustersSizes[k] != 0)
+      scaleVector(mCurrentClusters[k], (fptype)1. / mClustersSizes[k]);
 }
 
 void KMeans::UpdateLabels()
@@ -120,12 +121,12 @@ int KMeans::getNearestClusterLabel(const PointNd& point) const
   return label;
 }
 
-std::vector<PointNd> KMeans::getClusters() const
+vector<PointNd> KMeans::getClusters() const
 {
   return mCurrentClusters;
 }
 
-std::vector<int> KMeans::getLabels() const
+vector<int> KMeans::getLabels() const
 {
   return mCurrentLabels;
 }

@@ -5,6 +5,7 @@
 #include <omp.h>
 
 using namespace std;
+using namespace km;
 
 void makeGaussians(vector<PointNd>& points, const vector<PointNd>& centers, int k, int nSamples,
                   int dimension, vector<fptype> sigmas, int seed = 0)
@@ -17,7 +18,7 @@ void makeGaussians(vector<PointNd>& points, const vector<PointNd>& centers, int 
   for(int i = 0; i < k; i++)
     for(int j = 0; j < nSamples; j++)
     {
-      PointNd point(2);
+      PointNd point(dimension);
       for(int l = 0; l < dimension; l++)
         point[l] = distributions[l](generator) + centers[i][l];
       points.push_back(point);

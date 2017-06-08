@@ -9,32 +9,35 @@ Copyright (C) 2017 Sovrasov V. - All Rights Reserved
 
 #include <vector>
 
-using fptype = double;
-using PointNd = std::vector<fptype>;
-
-class KMeans
+namespace km
 {
-private:
+  using fptype = double;
+  using PointNd = std::vector<fptype>;
 
-  std::vector<int> mCurrentLabels;
-  std::vector<int> mClustersSizes;
-  std::vector<PointNd> mCurrentClusters;
-  const std::vector<PointNd>& mDataPoints;
+  class KMeans
+  {
+  private:
 
-  int mK;
-  int mMaxIters;
-  int mDataDim;
+    std::vector<int> mCurrentLabels;
+    std::vector<int> mClustersSizes;
+    std::vector<PointNd> mCurrentClusters;
+    const std::vector<PointNd>& mDataPoints;
 
-  void InitClusters();
-  int getNearestClusterLabel(const PointNd& point) const;
-  void UpdateLabels();
-  void UpdateClusters();
+    int mK;
+    int mMaxIters;
+    int mDataDim;
 
-public:
+    void InitClusters();
+    int getNearestClusterLabel(const PointNd& point) const;
+    void UpdateLabels();
+    void UpdateClusters();
 
-  KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters);
+  public:
 
-  void run();
-  std::vector<PointNd> getClusters() const;
-  std::vector<int> getLabels() const;
-};
+    KMeans(const std::vector<PointNd>& inputPoints, int k, int maxIters);
+
+    void run();
+    std::vector<PointNd> getClusters() const;
+    std::vector<int> getLabels() const;
+  };
+}
